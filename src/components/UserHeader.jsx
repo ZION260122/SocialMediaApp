@@ -50,7 +50,12 @@ const UserHeader = () => {
           </Flex>
         </Box>
         <Box>
-          <Avatar name="Mark Zukerberg" src="/zuck-avatar.png" size={"xl"} />
+          <Avatar name="Mark Zukerberg" src="/zuck-avatar.png" size={
+            {
+              base:"md",
+              md: "xl",
+            }
+          } />
         </Box>
       </Flex>
       <Text>Co-founder, executive chairman and Meta Platform</Text>
