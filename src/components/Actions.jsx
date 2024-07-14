@@ -2,7 +2,7 @@ import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButt
 import { useState } from "react";
 
 const Actions = () => {
-	const [liked, setLiked] = useState()
+	const [liked, setLiked] = useState(false)
     return (
 		<Flex flexDirection='column'>
 			<Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
