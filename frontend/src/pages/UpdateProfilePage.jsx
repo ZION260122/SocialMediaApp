@@ -1,3 +1,4 @@
+//Timestamp : 4:00:00
 import {
     Button,
     Flex,
@@ -27,11 +28,14 @@ import useShowToast from '../hooks/useShowToast';
         password: ''
     });
     const fileRef = useRef(null)
+    const [updating, setUpdating] = useState(false)
 
     const { handleImageChange, imgUrl } = usePreviewImg();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(updating) return;
+        setUpdating(true)
 
         try {
             const res = await fetch(`/api/users/update/${user._id}`, {
@@ -39,14 +43,22 @@ import useShowToast from '../hooks/useShowToast';
                 headers: {
                     "Content-Type" : "application/json"
                 },
-                body: JSON.stringify({...inputs, profilePic:imgUrl})
+                body: JSON.stringify({...inputs, profilePic: imgUrl})
             });
             const data = await res.json();
-            console.log(data);
+            if(data.error){
+              showToast("Eror", data.error, "error");
+            }
+
+            showToast("Success", "Profile Updated Successfully", "success");
+            setUser(data);
+            localStorage.setItem("user-threads", JSON.stringify(data));
             
         } catch (error) {
             showToast("Error", error.message || "An unknown error occurred", "error");
             return;
+        }finally{
+          setUpdating(false)
         }
     }
 
@@ -145,7 +157,9 @@ import useShowToast from '../hooks/useShowToast';
               _hover={{
                 bg: 'green.500',
               }}
-              type='submit'>
+              type='submit'
+              isLoading={updating}
+              >
               Submit
             </Button>
           </Stack>

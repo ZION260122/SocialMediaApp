@@ -23,6 +23,8 @@ const signupUser = async (req, res) => {
     });
     await newUser.save();
 
+    //password should be null in response
+
     if (newUser) {
       generateTokensAndSetCookie(newUser._id, res);
       res.status(201).json({

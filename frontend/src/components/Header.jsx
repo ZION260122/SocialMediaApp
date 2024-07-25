@@ -1,9 +1,18 @@
-import { Flex, Image, useColorMode } from "@chakra-ui/react"
+import { Flex, Image, Link, useColorMode } from "@chakra-ui/react"
+import { useRecoilValue } from "recoil"
+import userAtom from "../atoms/userAtom"
+import { Link as RouterLink } from "react-router-dom"
 
 const Header = () => {
     const {colorMode, toggleColorMode} =  useColorMode()
+    const user = useRecoilValue(userAtom)
+
   return (
     <Flex justifyContent={"center"} mt={6} mb="12">
+        {user && (
+          <Link as={RouterLink}>
+          </Link>
+        )}
         <Image
             cursor={"pointer"}
             alt="logo"
