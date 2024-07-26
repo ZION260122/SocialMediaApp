@@ -30,10 +30,11 @@ export default function LoginCard() {
     username: "",
     password: ""
   });
-
   const showToast = useShowToast();
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/users/login", {
         method: "POST",
@@ -54,6 +55,8 @@ export default function LoginCard() {
 
     } catch (error) {
       showToast("Error", error.message || "An error occurred", "error");
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -102,14 +105,15 @@ export default function LoginCard() {
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
-                loadingText="Submitting"
+                loadingText="Logging In"
                 size="lg"
                 bg={useColorModeValue("gray.600", "gray.700")}
                 color={'white'}
                 _hover={{
                   bg: useColorModeValue("gray.700", "gray.800"),
                 }}
-                onClick={handleLogin}>
+                onClick={handleLogin}
+                isLoading = {loading}>
                 Login
               </Button>
             </Stack>
