@@ -11,6 +11,7 @@ const Header = () => {
     <Flex justifyContent={"center"} mt={6} mb="12">
         {user && (
           <Link as={RouterLink}>
+            <AiFillHome />
           </Link>
         )}
         <Image
