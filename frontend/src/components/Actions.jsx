@@ -22,8 +22,11 @@ const Actions = ({ post: post_ = {} }) => {
   const user = useRecoilValue(userAtom);
   const [post, setPost] = useState(post_);
   const [liked, setLiked] = useState(false);
+  const [isReplying, setIsReplying] = useState(false)
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLiking, setIsLiking] = useState(false)
+  const [reply, setReply] = useState('')
 
   useEffect(() => {
     if (post.likes && user) {
@@ -39,7 +42,11 @@ const Actions = ({ post: post_ = {} }) => {
         "error"
       );
 
+      if(isLiking) return;
+      setIsLiking(true);
+
     try {
+
       const res = await fetch("/api/posts/like/" + post._id, {
         method: "PUT",
         headers: {
@@ -64,10 +71,39 @@ const Actions = ({ post: post_ = {} }) => {
       }
     } catch (error) {
       showToast("Error", error.message, "error");
+    }finally {
+      setIsLiking(false);
     }
   };
 
-  if (!post.likes) return null;
+  const handleReply = async () => {
+    if(!user) return showToast("Error", "You must be logged in to reply a post", "error");
+    if(isReplying) return ;
+    setIsReplying(true)
+    try {
+      const res = await fetch(`/api/posts/reply/`+ post._id , {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({text: reply})
+      })
+
+      const data = await res.json();
+
+      if(data.error) return showToast("Error", data.error, "error");
+      
+      setPost({...post, replies: [...post.replies, data.reply]})
+      showToast("Success", "Reply posted Successfully", "success")
+      onClose()
+      setReply('')
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    } finally {
+      setIsReplying(false)
+    }
+  }
+
 
   return (
     <Flex flexDirection="column">
@@ -114,7 +150,7 @@ const Actions = ({ post: post_ = {} }) => {
 
       <Flex gap={2} alignItems={"center"}>
         <Text color={"gray.light"} fontSize="sm">
-          {post.comments?.length || 0} replies
+          {post.replies?.length || 0} replies
         </Text>
         <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
         <Text color={"gray.light"} fontSize="sm">
@@ -128,12 +164,18 @@ const Actions = ({ post: post_ = {} }) => {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <Input placeholder="Reply goes here.." />
+              <Input placeholder="Reply goes here.."
+               value={reply}
+               onChange={(e) => setReply(e.target.value)}
+                />
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" size={"sm"} mr={3}>
+            <Button colorScheme="blue" size={"sm"} mr={3}
+              onClick={handleReply}
+              isLoading ={isReplying}
+            >
               Reply
             </Button>
           </ModalFooter>
