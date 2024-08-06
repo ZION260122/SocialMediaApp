@@ -17,10 +17,11 @@ import { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
+import postAtom from "../atoms/postsAtom";
 
-const Actions = ({ post: post_ = {} }) => {
+const Actions = ({ post }) => {
   const user = useRecoilValue(userAtom);
-  const [post, setPost] = useState(post_);
+  const [posts, setPosts] = useRecoilValue(postAtom)
   const [liked, setLiked] = useState(false);
   const [isReplying, setIsReplying] = useState(false)
   const showToast = useShowToast();
@@ -59,13 +60,22 @@ const Actions = ({ post: post_ = {} }) => {
       } else {
         if (!liked) {
           // Add the ID of the current user to post.likes array
-          setPost({ ...post, likes: [...post.likes, user._id] });
+          const updatedPosts = posts.map((p) => {
+            if(p.id === post._id){
+              return {...p, likes: [...p.likes, user._id]};
+            } 
+            return p
+          })
+          setPosts(updatedPosts)
         } else {
           // Remove the ID of the current user from post.likes array
-          setPost({
-            ...post,
-            likes: post.likes.filter((id) => id !== user._id),
-          });
+          const updatedPosts = posts.map((p) => {
+            if(p.id === post._id){
+              return {...p, likes: p.likes.filter((id) => id !== user._id)}
+            }
+            return p;
+          })
+          setPosts(updatedPosts)
         }
         setLiked(!liked);
       }

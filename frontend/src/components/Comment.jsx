@@ -6,7 +6,7 @@ const Comment = ({ reply, lastReply  }) => {
         <Avatar src={reply.userPorfilePic} size={"sm"}/>
         <Flex gap={1} w={"full"} flexDirection={"column"}>
             <Flex w={"full"} justifyContent={"space-between"} alignItems={"center"}>
-                <Text fontsize="sm" fontWeight={"bold"}>{reply.username}</Text>
+                <Text fontSize="sm" fontWeight={"bold"}>{reply.username}</Text>
                
             </Flex>
             <Text>{reply.text}</Text>
