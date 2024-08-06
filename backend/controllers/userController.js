@@ -1,8 +1,10 @@
 import User from "../models/userModels.js";
+import Post from "../models/postModel.js";
 import bcrypt from "bcryptjs";
 import generateTokensAndSetCookie from "../utils/helpers/generateTokensAndSetCookie.js";
 import {v2 as cloudinary} from 'cloudinary'
 import mongoose from "mongoose";
+import Post from "../models/postModel.js";
 
 //signin User
 const signupUser = async (req, res) => {
@@ -158,6 +160,19 @@ const updateUser = async (req, res) => {
     user.bio = bio || user.bio;
 
     user = await user.save();
+
+    await Post.updateMany(
+      {"replies.userId": userId},
+      {
+        $set: {
+          "replies.$[reply].username" : user.username,
+          "replies.$[reply].userProfilePic" : user.profilePic,
+        }
+      },
+      {arrayFilters: [{"replies.userId" : userId}]}
+    )
+
+
     res.status(200).json({ message : "profile updated Successfully", user });
   } catch (err) {
     res.status(500).json({ error: err.message });
