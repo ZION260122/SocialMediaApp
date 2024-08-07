@@ -1,4 +1,4 @@
-import { Flex, Spinner } from "@chakra-ui/react"
+import {  Flex, Spinner } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import useShowToast from '../hooks/useShowToast'
 import Post from "../components/Post"
@@ -49,4 +49,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default HomePage;

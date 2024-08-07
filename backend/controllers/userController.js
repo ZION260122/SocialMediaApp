@@ -3,8 +3,7 @@ import Post from "../models/postModel.js";
 import bcrypt from "bcryptjs";
 import generateTokensAndSetCookie from "../utils/helpers/generateTokensAndSetCookie.js";
 import {v2 as cloudinary} from 'cloudinary'
-import mongoose from "mongoose";
-import Post from "../models/postModel.js";
+import mongoose from "mongoose"; 
 
 //signin User
 const signupUser = async (req, res) => {
