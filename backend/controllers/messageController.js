@@ -68,15 +68,13 @@ async function getMessages(req, res) {
 
 }
 
-import mongoose from 'mongoose';
 
 async function getConversations(req, res) {
     const userId = req.user._id;
 
     try {
-
         const conversations = await Conversation.find({
-            participants: userId
+            participants: mongoose.Types.ObjectId(userId) // Convert to ObjectId
         }).populate({
             path: "participants",
             select: "username profilePic"
@@ -85,6 +83,7 @@ async function getConversations(req, res) {
         res.status(200).json(conversations);
         
     } catch (error) {
+        console.error("Error fetching conversations:", error);
         res.status(500).json({ error: error.message });
     }
 }

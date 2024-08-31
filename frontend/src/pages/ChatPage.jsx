@@ -1,11 +1,32 @@
 import { Search2Icon } from "@chakra-ui/icons"
 import { Box, Button, Flex, Input, Skeleton, SkeletonCircle, Text, useColorModeValue } from "@chakra-ui/react"
 // import {GiConversation} from "react-icons/gi"
-
+import useShowToast from '../hooks/useShowToast'
 import Conversation from "../components/Conversation"
 import MessageContainer from "../components/MessageContainer"
+import { useEffect } from "react"
 
 const ChatPage = () => {
+    const showToast = useShowToast()
+    useEffect(() => {
+      const getConversations = async() => {
+        try {
+            const res = await fetch("/api/messages/conversations");
+            const data = await res.json();
+
+            if(data.error()){
+                showToast("Error", data.error , "error")
+                return;
+            }
+            console.log(data)
+            
+        } catch (error) {
+            showToast("Error", error.message, "error")
+        }
+      }
+      getConversations();
+    }, [showToast])
+    
   return (
     <Box
      position={"absolute"}
