@@ -25,7 +25,7 @@ import useShowToast from '../hooks/useShowToast';
         username: user.username,
         email: user.email,
         bio: user.bio,
-        password: ''
+        password: ""
     });
     const fileRef = useRef(null)
     const [updating, setUpdating] = useState(false)
@@ -46,6 +46,7 @@ import useShowToast from '../hooks/useShowToast';
                 body: JSON.stringify({...inputs, profilePic: imgUrl})
             });
             const data = await res.json();
+            console.log(data)
             if(data.error){
               showToast("Eror", data.error, "error");
             }

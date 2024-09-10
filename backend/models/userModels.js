@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema(
     username: {
       type: String,
       required: true,
+      unique: true, // Ensure no two users have the same username
     },
     email: {
       type: String,

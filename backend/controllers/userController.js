@@ -123,9 +123,9 @@ const followUnFollowUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { name, username, email, password, bio } = req.body;
-  let profilePic = req.body;
+  let {profilePic} = req.body;
 
-  const userId = req.user._id;
+  const userId = req.user._id.toString(); // Ensure string
 
   try {
     let user = await User.findById(userId);
@@ -151,15 +151,17 @@ const updateUser = async (req, res) => {
       profilePic = uploadedResponse.secure_url;
     }
 
-
+    //update user details
     user.email = email || user.email;
     user.name = name || user.name;
     user.username = username || user.username;
     user.profilePic = profilePic || user.profilePic;
     user.bio = bio || user.bio;
 
+    //save updated user
     user = await user.save();
 
+    // update replies where user has replies
     await Post.updateMany(
       {"replies.userId": userId},
       {
@@ -168,7 +170,7 @@ const updateUser = async (req, res) => {
           "replies.$[reply].userProfilePic" : user.profilePic,
         }
       },
-      {arrayFilters: [{"replies.userId" : userId}]}
+      {arrayFilters: [{"reply.userId" : userId}]}
     )
 
 
